@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reasons I Love You</title>
+<link rel="apple-touch-icon" href="icon.png">
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 2rem;
+    color: #c1126b;
+    background-color: #ffe6ee;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(255, 182, 193, 0.4) 0%, transparent 50%),
+      radial-gradient(circle at 90% 80%, rgba(255, 105, 180, 0.4) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(255, 160, 180, 0.3) 0%, transparent 60%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+  h1 { font-size: 2rem; margin-bottom: 1rem; }
+  .hearts {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #ff4d6d;
+  }
+  button {
+    font-size: 1.3rem;
+    padding: 1rem 2rem;
+    background-color: #ff4d6d;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    margin: 0.5rem;
+  }
+  button:focus { outline: 3px solid #000; }
+  #reason, #comfort, #favorites {
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+    min-height: 3rem;
+  }
+  .section-title {
+    margin-top: 3rem;
+    font-size: 1.8rem;
+    color: #a61156;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="hearts">❤️❤️❤️</div>
+
+<h1>Would you like to know why I love you?</h1>
+
+<button id="loveButton">Tell me</button>
+<button id="saveFavorite">⭐ Save to Favorites</button>
+<div id="reason" aria-live="polite"></div>
+
+<h2 class="section-title">If you're having a tough day…</h2>
+<button id="comfortButton">I'm having a bad day</button>
+<button id="saveComfortFavorite">⭐ Save to Favorites</button>
+<div id="comfort" aria-live="polite"></div>
+
+<h2 class="section-title">Your Favorites</h2>
+<div id="favorites" aria-live="polite"></div>
+<button id="clearFavs">Clear Favorites</button>
+
+<h2 class="section-title">Daily Reason Mode</h2>
+<button id="dailyToggle">Enable Daily Reason Notifications</button>
+<div id="dailyStatus" aria-live="polite"></div>
+
+<div class="hearts">❤️❤️❤️</div>
+
+<script>
+// Bell sound
+const bell = new Audio("bell.mp3");
+
+function playBell() { bell.currentTime = 0; bell.play(); }
+
+const loveReasons = Array.from({length:50},(_,i)=>"Love Reason "+(i+1));
+const comfortMessages = Array.from({length:50},(_,i)=>"Comfort Message "+(i+1));
+
+const reasonOut=document.getElementById("reason");
+const comfortOut=document.getElementById("comfort");
+
+function loadFavorites(){
+  const favs=JSON.parse(localStorage.getItem("favorites")||"[]");
+  document.getElementById("favorites").textContent=
+    favs.length?favs.join(" • "):"No favorites yet.";
+}
+function saveFavorite(text){
+  const favs=JSON.parse(localStorage.getItem("favorites")||"[]");
+  favs.push(text); localStorage.setItem("favorites",JSON.stringify(favs));
+  loadFavorites();
+}
+loadFavorites();
+
+document.getElementById("loveButton").addEventListener("click",()=>{
+  playBell();
+  const r=loveReasons[Math.floor(Math.random()*loveReasons.length)];
+  reasonOut.textContent=r;
+});
+document.getElementById("saveFavorite").addEventListener("click",()=>{
+  playBell();
+  if(reasonOut.textContent.trim()!=="") saveFavorite(reasonOut.textContent);
+});
+
+document.getElementById("comfortButton").addEventListener("click",()=>{
+  playBell();
+  const c=comfortMessages[Math.floor(Math.random()*comfortMessages.length)];
+  comfortOut.textContent=c;
+});
+document.getElementById("saveComfortFavorite").addEventListener("click",()=>{
+  playBell();
+  if(comfortOut.textContent.trim()!=="") saveFavorite(comfortOut.textContent);
+});
+document.getElementById("clearFavs").addEventListener("click",()=>{
+  localStorage.removeItem("favorites"); loadFavorites();
+});
+
+// Daily notifications
+async function registerDaily(){
+  if(!("serviceWorker" in navigator) || !("Notification" in window)){
+    document.getElementById("dailyStatus").textContent="Notifications not supported.";
+    return;
+  }
+  const permission=await Notification.requestPermission();
+  if(permission!=="granted"){
+    document.getElementById("dailyStatus").textContent="Permission denied.";
+    return;
+  }
+  await navigator.serviceWorker.register("service-worker.js");
+  localStorage.setItem("dailyEnabled","true");
+  document.getElementById("dailyStatus").textContent="Daily Reason Mode enabled.";
+}
+document.getElementById("dailyToggle").addEventListener("click",()=>{ playBell(); registerDaily(); });
+
+if(localStorage.getItem("dailyEnabled")==="true"){
+  document.getElementById("dailyStatus").textContent="Daily Reason Mode is enabled.";
+}
+</script>
+
+</body>
+</html>
