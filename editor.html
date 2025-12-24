@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Message Editor</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 1.5rem;
+    background: #fff6fa;
+    color: #6b0c37;
+  }
+
+  h1 {
+    margin-bottom: 1rem;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 4rem;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  button {
+    padding: 0.6rem 1rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    background: #ff4d6d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+  }
+
+  button.secondary {
+    background: #b81b63;
+  }
+
+  button.ghost {
+    background: transparent;
+    color: #7a0f3e;
+    border: 2px solid rgba(122, 15, 62, 0.3);
+  }
+
+  .message {
+    background: rgba(255,255,255,0.75);
+    padding: 0.75rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .controls {
+    margin-bottom: 1rem;
+  }
+</style>
+</head>
+
+<body>
+
+<div id="lock">
+  <h1>🔐 Enter Passphrase</h1>
+  <input type="password" id="pass" aria-label="Passphrase">
+  <button onclick="unlock()">Unlock</button>
+</div>
+
+<div id="editor" class="hidden">
+  <h1>❤️ Love Message Editor</h1>
+
+  <div class="controls">
+    <button onclick="addMessage()">Add New Message</button>
+    <button class="ghost" onclick="exportMessages()">Export Messages</button>
+    <button class="ghost" onclick="importMessages()">Import Messages</button>
+    <button class="ghost" onclick="resetToDefault()">Reset to Default</button>
+  </div>
+
+  <div id="list"></div>
+</div>
+
+<script>
+/* ===== CONFIG ===== */
+const PASSPHRASE = "honeysuckle"; // ← change this to anything you want
+const STORAGE_KEY = "love_custom_messages_v1";
+
+/* ===== DEFAULT FALLBACK ===== */
+const DEFAULT_MESSAGES = []; // main app will populate if empty
+
+/* ===== AUTH ===== */
+function unlock() {
+  const input = document.getElementById("pass").value;
+  if (input === PASSPHRASE) {
+    document.getElementById("lock").classList.add("hidden");
+    document.getElementById("editor").classList.remove("hidden");
+    load();
+  } else {
+    alert("Incorrect passphrase");
+  }
+}
+
+/* ===== DATA ===== */
+function getMessages() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    return Array.isArray(saved) ? saved : DEFAULT_MESSAGES;
+  } catch {
+    return DEFAULT_MESSAGES;
+  }
+}
+
+function saveMessages(list) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+}
+
+/* ===== UI ===== */
+function load() {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+  const messages = getMessages();
+
+  messages.forEach((msg, i) => {
+    const div = document.createElement("div");
+    div.className = "message";
+
+    const ta = document.createElement("textarea");
+    ta.value = msg;
+    ta.onchange = () => {
+      messages[i] = ta.value.trim();
+      saveMessages(messages);
+    };
+
+    const del = document.createElement("button");
+    del.className = "secondary";
+    del.textContent = "Delete";
+    del.onclick = () => {
+      messages.splice(i, 1);
+      saveMessages(messages);
+      load();
+    };
+
+    div.appendChild(ta);
+    div.appendChild(del);
+    list.appendChild(div);
+  });
+}
+
+function addMessage() {
+  const messages = getMessages();
+  messages.unshift("New message...");
+  saveMessages(messages);
+  load();
+}
+
+/* ===== IMPORT / EXPORT ===== */
+function exportMessages() {
+  const text = JSON.stringify(getMessages(), null, 2);
+  navigator.clipboard.writeText(text);
+  alert("Messages copied to clipboard");
+}
+
+function importMessages() {
+  const input = prompt("Paste JSON array of messages:");
+  if (!input) return;
+  try {
+    const parsed = JSON.parse(input);
+    if (Array.isArray(parsed)) {
+      saveMessages(parsed.map(x => String(x)));
+      load();
+    } else {
+      alert("Invalid format");
+    }
+  } catch {
+    alert("Invalid JSON");
+  }
+}
+
+function resetToDefault() {
+  if (confirm("Reset all messages?")) {
+    localStorage.removeItem(STORAGE_KEY);
+    load();
+  }
+}
+</script>
+
+</body>
+</html>
