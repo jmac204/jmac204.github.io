@@ -242,8 +242,12 @@ function bell() {
    200 messages total
    No repeats until all shown
 ------------------------------ */
-const loveReasons = [
-  // Original 100, rebalanced and blended with comfort style messages
+const CUSTOM_KEY = "love_custom_messages_v1";
+const custom = JSON.parse(localStorage.getItem(CUSTOM_KEY) || "null");
+  
+const loveReasons = Array.isArray(custom) && custom.length
+  ? custom
+  : [
   "Amy, I love you because you are my Honey Suckle.",
   "I love you because God gave me you when I needed you most.",
   "I love you because you make our home feel safe and warm.",
