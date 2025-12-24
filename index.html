@@ -1,147 +1,720 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Reasons I Love You</title>
-<link rel="apple-touch-icon" href="icon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reasons I Love You</title>
 
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 2rem;
-    color: #c1126b;
-    background-color: #ffe6ee;
-    background-image:
-      radial-gradient(circle at 10% 20%, rgba(255, 182, 193, 0.4) 0%, transparent 50%),
-      radial-gradient(circle at 90% 80%, rgba(255, 105, 180, 0.4) 0%, transparent 50%),
-      radial-gradient(circle at 50% 50%, rgba(255, 160, 180, 0.3) 0%, transparent 60%);
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-  }
-  h1 { font-size: 2rem; margin-bottom: 1rem; }
-  .hearts {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    color: #ff4d6d;
-  }
-  button {
-    font-size: 1.3rem;
-    padding: 1rem 2rem;
-    background-color: #ff4d6d;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    margin: 0.5rem;
-  }
-  button:focus { outline: 3px solid #000; }
-  #reason, #comfort, #favorites {
-    font-size: 1.5rem;
-    margin-top: 1.5rem;
-    min-height: 3rem;
-  }
-  .section-title {
-    margin-top: 3rem;
-    font-size: 1.8rem;
-    color: #a61156;
-  }
-</style>
+  <!-- Home screen icon -->
+  <link rel="apple-touch-icon" href="icon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <meta name="theme-color" content="#ff4d6d" />
+
+  <style>
+    :root {
+      --pink: #ff4d6d;
+      --deep: #c1126b;
+      --bg: #ffe6ee;
+      --card: rgba(255, 255, 255, 0.75);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+      text-align: center;
+      padding: 2rem 1.25rem 3rem;
+      color: var(--deep);
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(255, 182, 193, 0.35) 0%, transparent 55%),
+        radial-gradient(circle at 90% 80%, rgba(255, 105, 180, 0.28) 0%, transparent 55%),
+        radial-gradient(circle at 50% 50%, rgba(255, 160, 180, 0.18) 0%, transparent 60%),
+        radial-gradient(circle at 20% 80%, rgba(255, 120, 160, 0.18) 0%, transparent 55%),
+        radial-gradient(circle at 80% 25%, rgba(255, 140, 170, 0.18) 0%, transparent 55%);
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    .hearts {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      color: var(--pink);
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      margin: 0.75rem 0 1.25rem;
+    }
+
+    .card {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 18px;
+      padding: 1.25rem;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      backdrop-filter: blur(6px);
+    }
+
+    .btnrow {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    button {
+      font-size: 1.2rem;
+      padding: 0.95rem 1.25rem;
+      background-color: var(--pink);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      min-width: 10rem;
+    }
+
+    button.secondary {
+      background-color: #b81b63;
+    }
+
+    button.ghost {
+      background: transparent;
+      color: #7a0f3e;
+      border: 2px solid rgba(122, 15, 62, 0.35);
+    }
+
+    button:focus {
+      outline: 3px solid #000;
+      outline-offset: 2px;
+    }
+
+    .output {
+      font-size: 1.55rem;
+      margin-top: 1.25rem;
+      min-height: 4rem;
+      line-height: 1.35;
+      padding: 0.75rem 0.25rem;
+    }
+
+    .section-title {
+      margin: 2rem 0 0.75rem;
+      font-size: 1.55rem;
+      color: #a61156;
+    }
+
+    .small {
+      font-size: 1rem;
+      color: #6b0c37;
+      line-height: 1.35;
+      margin-top: 0.5rem;
+    }
+
+    .favlist {
+      text-align: left;
+      margin: 0.75rem auto 0;
+      max-width: 900px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 14px;
+      padding: 0.75rem;
+    }
+
+    .favitem {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 0.6rem 0.35rem;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .favitem:last-child {
+      border-bottom: none;
+    }
+
+    .favtext {
+      flex: 1;
+      font-size: 1.05rem;
+      color: #6b0c37;
+    }
+
+    .removeBtn {
+      background: transparent;
+      color: #7a0f3e;
+      border: 2px solid rgba(122, 15, 62, 0.3);
+      border-radius: 12px;
+      padding: 0.55rem 0.75rem;
+      font-size: 1rem;
+      min-width: auto;
+    }
+
+    .toggleRow {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+    }
+
+    .status {
+      margin-top: 0.75rem;
+      font-size: 1.05rem;
+      color: #6b0c37;
+      min-height: 1.5rem;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="hearts" aria-hidden="true">❤️❤️❤️</div>
 
-<div class="hearts">❤️❤️❤️</div>
+  <h1>Would you like to know why I love you?</h1>
 
-<h1>Would you like to know why I love you?</h1>
+  <div class="card" role="region" aria-label="Love message generator">
+    <div class="btnrow">
+      <button id="tellMeBtn" aria-label="Tell me why you love me">Tell me</button>
+      <button id="saveFavBtn" class="secondary" aria-label="Save this message to favorites">⭐ Save to Favorites</button>
+    </div>
 
-<button id="loveButton">Tell me</button>
-<button id="saveFavorite">⭐ Save to Favorites</button>
-<div id="reason" aria-live="polite"></div>
+    <!-- Screen readers will automatically announce updates -->
+    <div id="messageOut" class="output" aria-live="polite"></div>
 
-<h2 class="section-title">If you're having a tough day…</h2>
-<button id="comfortButton">I'm having a bad day</button>
-<button id="saveComfortFavorite">⭐ Save to Favorites</button>
-<div id="comfort" aria-live="polite"></div>
+    <div class="toggleRow" role="group" aria-label="Daily notification controls">
+      <button id="dailyEnableBtn" class="ghost" aria-label="Enable daily noon notification">Enable Daily Noon Notification</button>
+      <button id="dailyDisableBtn" class="ghost" aria-label="Disable daily noon notification">Disable Daily Noon Notification</button>
+    </div>
 
-<h2 class="section-title">Your Favorites</h2>
-<div id="favorites" aria-live="polite"></div>
-<button id="clearFavs">Clear Favorites</button>
+    <div id="dailyStatus" class="status" aria-live="polite"></div>
 
-<h2 class="section-title">Daily Reason Mode</h2>
-<button id="dailyToggle">Enable Daily Reason Notifications</button>
-<div id="dailyStatus" aria-live="polite"></div>
+    <div class="small">
+      Note: On GitHub Pages, a noon notification can only fire when the app is open (including in the background).
+      Always-on push at noon when fully closed requires a small server-based Web Push service.
+    </div>
+  </div>
 
-<div class="hearts">❤️❤️❤️</div>
+  <h2 class="section-title">Your Favorites</h2>
+
+  <div class="btnrow">
+    <button id="clearFavsBtn" class="ghost" aria-label="Clear all favorites">Clear Favorites</button>
+  </div>
+
+  <div id="favoritesRegion" class="favlist" aria-live="polite" role="region" aria-label="Favorites list"></div>
+
+  <div class="hearts" aria-hidden="true" style="margin-top:1.25rem;">❤️❤️❤️</div>
 
 <script>
-// Bell sound
-const bell = new Audio("bell.mp3");
+/* -----------------------------
+   Soft bell using Web Audio
+------------------------------ */
+let audioCtx = null;
+function bell() {
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const now = audioCtx.currentTime;
 
-function playBell() { bell.currentTime = 0; bell.play(); }
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
 
-const loveReasons = Array.from({length:50},(_,i)=>"Love Reason "+(i+1));
-const comfortMessages = Array.from({length:50},(_,i)=>"Comfort Message "+(i+1));
+    osc1.type = "triangle";
+    osc2.type = "sine";
+    osc1.frequency.setValueAtTime(880, now);
+    osc2.frequency.setValueAtTime(1320, now);
 
-const reasonOut=document.getElementById("reason");
-const comfortOut=document.getElementById("comfort");
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.18, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
 
-function loadFavorites(){
-  const favs=JSON.parse(localStorage.getItem("favorites")||"[]");
-  document.getElementById("favorites").textContent=
-    favs.length?favs.join(" • "):"No favorites yet.";
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + 0.6);
+    osc2.stop(now + 0.6);
+  } catch (e) {
+    // If audio fails, do nothing.
+  }
 }
-function saveFavorite(text){
-  const favs=JSON.parse(localStorage.getItem("favorites")||"[]");
-  favs.push(text); localStorage.setItem("favorites",JSON.stringify(favs));
-  loadFavorites();
+
+/* -----------------------------
+   200 messages total
+   No repeats until all shown
+------------------------------ */
+const loveReasons = [
+  // Original 100, rebalanced and blended with comfort style messages
+  "Amy, I love you because you are my Honey Suckle.",
+  "I love you because God gave me you when I needed you most.",
+  "I love you because you make our home feel safe and warm.",
+  "I love you because you love Julie, Ellie, and Jason with your whole heart.",
+  "I love you because you are an excellent mother.",
+  "I love you because you show so much love and grace.",
+  "I love you because you inspire me.",
+  "I love you because you drive me to be better.",
+  "I love you because I am proud of you.",
+  "I love you because your love is steady and faithful.",
+  "I love you because your kindness changes the world around you.",
+  "I love you because you listen to me with patience and care.",
+  "I love you because you believe in us, even when days are hard.",
+  "I love you because your laugh makes my whole day better.",
+  "I love you because your hugs feel like home.",
+  "I love you because you make ordinary days feel special.",
+  "I love you because you forgive easily and love deeply.",
+  "I love you because you are stronger than you think.",
+  "I love you because you keep going even when you are tired.",
+  "I love you because you show up for our kids in a thousand ways.",
+  "I love you because you are gentle and fierce at the same time.",
+  "I love you because you make me want to be the best version of myself.",
+  "I love you because you make me feel seen and valued.",
+  "I love you because your faith steadies our family.",
+  "I love you because your heart is sincere and true.",
+  "I love you because you bring peace into my life.",
+  "I love you because you create a home full of warmth and love.",
+  "I love you because you make me feel safe when life is loud.",
+  "I love you because you are my answered prayer.",
+  "I love you because you are a blessing I never take for granted.",
+  "I love you because you pour love into Julie in ways she will carry forever.",
+  "I love you because you pour love into Ellie in ways she will carry forever.",
+  "I love you because you pour love into Jason in ways he will carry forever.",
+  "I love you because you teach our kids what love looks like.",
+  "I love you because you are patient when I need patience the most.",
+  "I love you because you calm the storm in me.",
+  "I love you because you make room for joy even in busy seasons.",
+  "I love you because your smile still melts me.",
+  "I love you because you see the good in me even when I do not.",
+  "I love you because you are thoughtful in the smallest details.",
+  "I love you because you are a safe place for our family.",
+  "I love you because you are the heart of our home.",
+  "I love you because you keep our family grounded.",
+  "I love you because you love with action, not just words.",
+  "I love you because you are faithful to the people you love.",
+  "I love you because you make me feel wanted.",
+  "I love you because you are patient with the kids, even on hard days.",
+  "I love you because you show grace when it would be easier not to.",
+  "I love you because you make holidays feel magical.",
+  "I love you because you are steady when life is shaky.",
+  "I love you because you are wise in the way you care.",
+  "I love you because you make our family feel whole.",
+  "I love you because you are honest and kind at the same time.",
+  "I love you because you are the best teammate I could ever ask for.",
+  "I love you because you help me grow without making me feel small.",
+  "I love you because you give love freely.",
+  "I love you because you are a woman of courage.",
+  "I love you because you are a woman of compassion.",
+  "I love you because you make the hard days survivable.",
+  "I love you because you keep choosing love.",
+  "I love you because you keep choosing us.",
+  "I love you because you make me laugh when I need it.",
+  "I love you because you can be soft and strong in the same breath.",
+  "I love you because you make our kids feel secure.",
+  "I love you because you celebrate our kids for who they are.",
+  "I love you because you are the kind of mother kids remember forever.",
+  "I love you because you lead our family with love and grace.",
+  "I love you because you make the little moments matter.",
+  "I love you because you notice when I am not okay.",
+  "I love you because you love me on my best days and my worst days.",
+  "I love you because you remind me what really matters.",
+  "I love you because you encourage me without pressure.",
+  "I love you because your heart is a gift to everyone near you.",
+  "I love you because you are my peace.",
+  "I love you because you are my comfort.",
+  "I love you because you are my partner.",
+  "I love you because you are my best home.",
+  "I love you because you bring light into our family.",
+  "I love you because you are the reason our kids feel safe.",
+  "I love you because you model love and grace for Julie.",
+  "I love you because you model love and grace for Ellie.",
+  "I love you because you model love and grace for Jason.",
+  "I love you because you are gentle when someone needs gentleness.",
+  "I love you because you are strong when someone needs strength.",
+  "I love you because you are brave when things are scary.",
+  "I love you because you keep faith when it is hard.",
+  "I love you because you carry love into every room you enter.",
+  "I love you because you bring out the best in me.",
+  "I love you because you make our family better just by being you.",
+  "I love you because you are a gift from God to me.",
+  "I love you because God gave me you, and I thank Him for you.",
+  "I love you because you are my Honey Suckle, always.",
+  "I love you because you are enough exactly as you are.",
+  "I love you because your worth never changes, not even on hard days.",
+  "I love you because you do not have to be strong all the time.",
+  "I love you because you deserve rest and gentleness.",
+  "I love you because you can lean on me anytime.",
+  "I love you because you are never alone in this life.",
+  "I love you because your feelings matter to me.",
+  "I love you because you are allowed to have hard days.",
+  "I love you because I am proud of you for making it through today.",
+  "I love you because I love you, simply and completely.",
+
+  // Additional 50 (themes: excellent mother, love and grace, inspire me, drive me to be better, I love you, proud of you)
+  "I love you because you mother with tenderness and backbone.",
+  "I love you because you make each child feel uniquely loved.",
+  "I love you because you teach our kids kindness by living it.",
+  "I love you because you guide Julie with patience and wisdom.",
+  "I love you because you guide Ellie with gentleness and strength.",
+  "I love you because you guide Jason with steady love and respect.",
+  "I love you because you show love and grace when life is chaotic.",
+  "I love you because you respond with grace even when you are stressed.",
+  "I love you because you treat people with dignity.",
+  "I love you because you love our family in practical ways every day.",
+  "I love you because you inspire me to be calmer and kinder.",
+  "I love you because you inspire me to be more present.",
+  "I love you because you inspire me to lead with love.",
+  "I love you because you push me to grow without pushing me away.",
+  "I love you because you drive me to be better for you and for our kids.",
+  "I love you because you make me want to be worthy of you.",
+  "I love you because you remind me that faith and love go together.",
+  "I love you because you carry grace in your words.",
+  "I love you because you carry grace in your choices.",
+  "I love you because you are an excellent mother even when you doubt yourself.",
+  "I love you because you keep loving, even when you feel empty.",
+  "I love you because you show up for our family again and again.",
+  "I love you because you give our children a steady foundation.",
+  "I love you because you make our kids feel brave enough to be themselves.",
+  "I love you because you build people up instead of tearing them down.",
+  "I love you because you make me feel like I can do hard things.",
+  "I love you because you are the heart of our family story.",
+  "I love you because you are the calm in our home.",
+  "I love you because you are the warmth in our home.",
+  "I love you because you are the kindness in our home.",
+  "I love you because you teach love by example.",
+  "I love you because you teach grace by example.",
+  "I love you because you are proud-worthy in a thousand quiet ways.",
+  "I love you because I am proud of your patience.",
+  "I love you because I am proud of your strength.",
+  "I love you because I am proud of your courage.",
+  "I love you because I am proud of the mother you are.",
+  "I love you because I am proud of the woman you are.",
+  "I love you because you love Julie with such intentional care.",
+  "I love you because you love Ellie with such intentional care.",
+  "I love you because you love Jason with such intentional care.",
+  "I love you because you make our kids feel heard.",
+  "I love you because you make our kids feel safe to talk.",
+  "I love you because you are my favorite person to come home to.",
+  "I love you because you make love feel like a place.",
+  "I love you because you choose grace when you could choose frustration.",
+  "I love you because your love keeps our family strong.",
+  "I love you because you make me better just by loving me.",
+  "I love you because I love you, and I always will.",
+
+  // Additional 50 (themes: you are beautiful, incredible friend, strong and brave)
+  "I love you because you are beautiful in the way you care for people.",
+  "I love you because you are beautiful in your kindness.",
+  "I love you because you are beautiful in your patience.",
+  "I love you because you are beautiful in your courage.",
+  "I love you because you are beautiful to me in every season.",
+  "I love you because your beauty is deeper than anything you can see.",
+  "I love you because your smile is beautiful and it changes the room.",
+  "I love you because your eyes carry warmth and honesty.",
+  "I love you because you are an incredible friend to the people you love.",
+  "I love you because you show up for your friends with real care.",
+  "I love you because you listen like a true friend listens.",
+  "I love you because you celebrate others without jealousy.",
+  "I love you because you are loyal in the best way.",
+  "I love you because you are the friend people trust.",
+  "I love you because you are the friend people feel safe with.",
+  "I love you because you are my closest friend.",
+  "I love you because I can tell you anything.",
+  "I love you because you are honest with me in love.",
+  "I love you because you are brave in quiet ways most people miss.",
+  "I love you because you are strong when life asks too much.",
+  "I love you because you are brave enough to keep loving.",
+  "I love you because you are strong enough to keep going.",
+  "I love you because you face hard days and still choose kindness.",
+  "I love you because you are brave when you feel afraid.",
+  "I love you because you are strong even when you feel small.",
+  "I love you because you carry our family through storms.",
+  "I love you because your strength makes me feel safe.",
+  "I love you because your bravery inspires me to be braver too.",
+  "I love you because you protect what matters with your whole heart.",
+  "I love you because you stand up for our kids.",
+  "I love you because you stand up for our family.",
+  "I love you because you are beautiful when you are laughing.",
+  "I love you because you are beautiful when you are focused.",
+  "I love you because you are beautiful when you are tired and still trying.",
+  "I love you because you are beautiful when you are being you.",
+  "I love you because you are an incredible friend to me on hard days.",
+  "I love you because you are an incredible friend to me on good days.",
+  "I love you because you make friendship feel like home.",
+  "I love you because you bring comfort without needing to fix everything.",
+  "I love you because you are brave enough to be honest about your feelings.",
+  "I love you because you are strong enough to ask for help when you need it.",
+  "I love you because you are brave enough to try again.",
+  "I love you because you are strong enough to forgive.",
+  "I love you because you are beautiful in the way you love Julie.",
+  "I love you because you are beautiful in the way you love Ellie.",
+  "I love you because you are beautiful in the way you love Jason.",
+  "I love you because you are beautiful in the way you love me.",
+  "I love you because you are my beautiful, brave, incredible friend.",
+  "I love you because I am proud of your strength and your heart."
+];
+
+// Shuffle bag state persisted across sessions
+const POOL_KEY = "love_pool_v1";
+const LAST_KEY = "love_last_v1";
+
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 }
-loadFavorites();
 
-document.getElementById("loveButton").addEventListener("click",()=>{
-  playBell();
-  const r=loveReasons[Math.floor(Math.random()*loveReasons.length)];
-  reasonOut.textContent=r;
-});
-document.getElementById("saveFavorite").addEventListener("click",()=>{
-  playBell();
-  if(reasonOut.textContent.trim()!=="") saveFavorite(reasonOut.textContent);
-});
+function getPool() {
+  const raw = localStorage.getItem(POOL_KEY);
+  if (raw) {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length) return parsed;
+    } catch (e) {}
+  }
+  const fresh = shuffle([...Array(loveReasons.length).keys()]);
+  localStorage.setItem(POOL_KEY, JSON.stringify(fresh));
+  return fresh;
+}
 
-document.getElementById("comfortButton").addEventListener("click",()=>{
-  playBell();
-  const c=comfortMessages[Math.floor(Math.random()*comfortMessages.length)];
-  comfortOut.textContent=c;
-});
-document.getElementById("saveComfortFavorite").addEventListener("click",()=>{
-  playBell();
-  if(comfortOut.textContent.trim()!=="") saveFavorite(comfortOut.textContent);
-});
-document.getElementById("clearFavs").addEventListener("click",()=>{
-  localStorage.removeItem("favorites"); loadFavorites();
-});
+function savePool(pool) {
+  localStorage.setItem(POOL_KEY, JSON.stringify(pool));
+}
 
-// Daily notifications
-async function registerDaily(){
-  if(!("serviceWorker" in navigator) || !("Notification" in window)){
-    document.getElementById("dailyStatus").textContent="Notifications not supported.";
+function nextMessage() {
+  let pool = getPool();
+  if (!pool.length) {
+    pool = shuffle([...Array(loveReasons.length).keys()]);
+  }
+
+  // Avoid immediate repeat if possible
+  const last = Number(localStorage.getItem(LAST_KEY));
+  let idx = pool.pop();
+
+  if (loveReasons.length > 1 && idx === last && pool.length) {
+    const swapIdx = pool.pop();
+    pool.unshift(idx);
+    idx = swapIdx;
+  }
+
+  localStorage.setItem(LAST_KEY, String(idx));
+  savePool(pool);
+  return loveReasons[idx];
+}
+
+/* -----------------------------
+   Favorites
+------------------------------ */
+const FAV_KEY = "love_favorites_v1";
+
+function loadFavorites() {
+  try {
+    const favs = JSON.parse(localStorage.getItem(FAV_KEY) || "[]");
+    return Array.isArray(favs) ? favs : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveFavorites(favs) {
+  localStorage.setItem(FAV_KEY, JSON.stringify(favs));
+}
+
+function renderFavorites() {
+  const region = document.getElementById("favoritesRegion");
+  const favs = loadFavorites();
+
+  if (!favs.length) {
+    region.textContent = "No favorites yet.";
     return;
   }
-  const permission=await Notification.requestPermission();
-  if(permission!=="granted"){
-    document.getElementById("dailyStatus").textContent="Permission denied.";
+
+  region.innerHTML = "";
+  favs.forEach((text, i) => {
+    const row = document.createElement("div");
+    row.className = "favitem";
+
+    const t = document.createElement("div");
+    t.className = "favtext";
+    t.textContent = text;
+
+    const rm = document.createElement("button");
+    rm.className = "removeBtn";
+    rm.type = "button";
+    rm.setAttribute("aria-label", "Remove this favorite");
+    rm.textContent = "Remove";
+    rm.addEventListener("click", () => {
+      bell();
+      const next = loadFavorites().filter((_, idx) => idx !== i);
+      saveFavorites(next);
+      renderFavorites();
+    });
+
+    row.appendChild(t);
+    row.appendChild(rm);
+    region.appendChild(row);
+  });
+}
+
+function addFavorite(text) {
+  const trimmed = (text || "").trim();
+  if (!trimmed) return;
+
+  const favs = loadFavorites();
+
+  // Avoid duplicate favorites
+  if (!favs.includes(trimmed)) {
+    favs.unshift(trimmed);
+    saveFavorites(favs);
+  }
+  renderFavorites();
+}
+
+/* -----------------------------
+   Daily Noon notification logic
+   Works when app is open
+------------------------------ */
+const DAILY_ENABLED_KEY = "daily_noon_enabled_v1";
+const DAILY_LAST_SENT_KEY = "daily_noon_last_sent_v1";
+
+function todayKey() {
+  const d = new Date();
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const dd = String(d.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+function isAfterNoonNow() {
+  const d = new Date();
+  const h = d.getHours();
+  const m = d.getMinutes();
+  return (h > 12) || (h === 12 && m >= 0);
+}
+
+function setDailyStatus(text) {
+  document.getElementById("dailyStatus").textContent = text;
+}
+
+async function ensureServiceWorker() {
+  if (!("serviceWorker" in navigator)) return null;
+  try {
+    const reg = await navigator.serviceWorker.register("service-worker.js");
+    return reg;
+  } catch (e) {
+    return null;
+  }
+}
+
+async function enableDailyNoon() {
+  bell();
+  if (!("Notification" in window)) {
+    setDailyStatus("Notifications are not supported on this device.");
     return;
   }
-  await navigator.serviceWorker.register("service-worker.js");
-  localStorage.setItem("dailyEnabled","true");
-  document.getElementById("dailyStatus").textContent="Daily Reason Mode enabled.";
-}
-document.getElementById("dailyToggle").addEventListener("click",()=>{ playBell(); registerDaily(); });
 
-if(localStorage.getItem("dailyEnabled")==="true"){
-  document.getElementById("dailyStatus").textContent="Daily Reason Mode is enabled.";
+  const perm = await Notification.requestPermission();
+  if (perm !== "granted") {
+    setDailyStatus("Notification permission was not granted.");
+    return;
+  }
+
+  const reg = await ensureServiceWorker();
+  if (!reg) {
+    setDailyStatus("Could not enable notifications. Service worker failed to register.");
+    return;
+  }
+
+  localStorage.setItem(DAILY_ENABLED_KEY, "true");
+  setDailyStatus("Daily Noon Notification is enabled.");
+
+  // If it is already after noon and not sent today, send now
+  trySendDailyNoon();
 }
+
+function disableDailyNoon() {
+  bell();
+  localStorage.removeItem(DAILY_ENABLED_KEY);
+  setDailyStatus("Daily Noon Notification is disabled.");
+}
+
+async function trySendDailyNoon() {
+  const enabled = localStorage.getItem(DAILY_ENABLED_KEY) === "true";
+  if (!enabled) return;
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  if (!isAfterNoonNow()) return;
+
+  const today = todayKey();
+  const lastSent = localStorage.getItem(DAILY_LAST_SENT_KEY);
+
+  if (lastSent === today) return;
+
+  const reg = await ensureServiceWorker();
+  if (!reg) return;
+
+  const msg = nextMessage();
+
+  // Tell the service worker to display a notification
+  if (navigator.serviceWorker.controller) {
+    navigator.serviceWorker.controller.postMessage({ type: "SHOW_NOON", message: msg });
+  } else {
+    // If controller not ready yet, show from page (fallback)
+    try { new Notification("Daily Reason I Love You ❤️", { body: msg, icon: "icon.png" }); } catch (e) {}
+  }
+
+  localStorage.setItem(DAILY_LAST_SENT_KEY, today);
+  setDailyStatus("Daily Noon Notification is enabled. Last sent: " + today + ".");
+}
+
+/* -----------------------------
+   Wire up UI
+------------------------------ */
+const out = document.getElementById("messageOut");
+const tellMeBtn = document.getElementById("tellMeBtn");
+const saveFavBtn = document.getElementById("saveFavBtn");
+const clearFavsBtn = document.getElementById("clearFavsBtn");
+const dailyEnableBtn = document.getElementById("dailyEnableBtn");
+const dailyDisableBtn = document.getElementById("dailyDisableBtn");
+
+tellMeBtn.addEventListener("click", () => {
+  bell();
+  const msg = nextMessage();
+  out.textContent = msg; // aria-live will announce automatically
+});
+
+saveFavBtn.addEventListener("click", () => {
+  bell();
+  addFavorite(out.textContent);
+});
+
+clearFavsBtn.addEventListener("click", () => {
+  bell();
+  localStorage.removeItem(FAV_KEY);
+  renderFavorites();
+});
+
+dailyEnableBtn.addEventListener("click", enableDailyNoon);
+dailyDisableBtn.addEventListener("click", disableDailyNoon);
+
+// Initial render
+renderFavorites();
+
+// Register SW early (helps notifications and offline)
+ensureServiceWorker();
+
+// Set initial status and attempt noon send when app opens
+if (localStorage.getItem(DAILY_ENABLED_KEY) === "true") {
+  setDailyStatus("Daily Noon Notification is enabled.");
+} else {
+  setDailyStatus("");
+}
+trySendDailyNoon();
+
+// Check every minute while app is open
+setInterval(trySendDailyNoon, 60 * 1000);
+
+// Also check when returning to the app
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") trySendDailyNoon();
+});
 </script>
-
 </body>
 </html>
