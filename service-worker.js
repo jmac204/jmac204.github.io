@@ -1,19 +1,50 @@
-// SERVICE WORKER FOR DAILY NOTIFICATIONS AT NOON
+self.addEventListener("install", (event) => {
+  self.skipWaiting();
+});
 
-const loveReasons = Array.from({length:50},(_,i)=>"Love Reason "+(i+1));
+self.addEventListener("activate", (event) => {
+  event.waitUntil(self.clients.claim());
+});
 
-self.addEventListener("install",()=>self.skipWaiting());
-self.addEventListener("activate",()=>self.clients.claim());
+// Basic offline caching (optional but nice on iPhone home screen)
+const CACHE_NAME = "love-app-cache-v1";
+const ASSETS = [
+  "./",
+  "./index.html",
+  "./icon.png",
+  "./manifest.webmanifest",
+  "./service-worker.js"
+];
 
-// Fire daily at noon
-async function sendNotification(){
-  const random=loveReasons[Math.floor(Math.random()*loveReasons.length)];
-  self.registration.showNotification("Daily Reason I Love You ❤️",{
-    body: random,
-    icon: "icon.png"
-  });
-}
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  event.respondWith(
+    caches.open(CACHE_NAME).then(async (cache) => {
+      const cached = await cache.match(req);
+      if (cached) return cached;
 
-self.addEventListener("periodicsync",event=>{
-  if(event.tag==="daily-love") event.waitUntil(sendNotification());
+      try {
+        const fresh = await fetch(req);
+        // Cache same-origin GET requests
+        if (req.method === "GET" && new URL(req.url).origin === self.location.origin) {
+          cache.put(req, fresh.clone());
+        }
+        return fresh;
+      } catch (e) {
+        // Offline fallback to cached index
+        return cache.match("./index.html");
+      }
+    })
+  );
+});
+
+// Receive message from the page and show notification
+self.addEventListener("message", (event) => {
+  const data = event.data || {};
+  if (data.type === "SHOW_NOON" && typeof data.message === "string") {
+    self.registration.showNotification("Daily Reason I Love You ❤️", {
+      body: data.message,
+      icon: "icon.png"
+    });
+  }
 });
